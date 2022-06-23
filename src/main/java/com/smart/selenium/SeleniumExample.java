@@ -31,20 +31,20 @@ public class SeleniumExample {
 
 		// Login As cnss user
 		login("cnssuser", "1234");
-		
+
 		Thread.sleep(30000);
 		goUpDown();
 		Thread.sleep(30000);
-		
+
+		// Add demande
+		WebElement addDemandBtn = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[2]");
+		clickElement(addDemandBtn);
+		Thread.sleep(5000);
+		addDemand();
+
 		viewNotifications();
-		
 		logout();
 		return;
-		// Add demande
-//		WebElement addDemandBtn = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[2]");
-//		clickElement(addDemandBtn);
-//		Thread.sleep(5000);
-//		addDemand();
 
 	}
 
@@ -74,7 +74,7 @@ public class SeleniumExample {
 			Thread.sleep(5000);
 
 			WebElement fileUploadBtn = findElementByXpath("//*[@id=\"1\"]");
-			
+
 			goDown();
 			fileUploadBtn.sendKeys("C:\\Users\\SMSDT-DEV-005\\Desktop\\file-sample_150kB.pdf");
 			System.out.println("Uploaded a file");
@@ -93,7 +93,7 @@ public class SeleniumExample {
 			System.out.println("Demand Submitted successfully");
 			Thread.sleep(2000);
 			goUp();
-			
+
 			Thread.sleep(30000);
 			demandListAndDetails();
 
@@ -126,29 +126,29 @@ public class SeleniumExample {
 	}
 
 	private static void demandListAndDetails() throws Exception {
-		
+
 		Thread.sleep(3000);
 		WebElement demandListBtn = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[3]/a");
 
 		clickElement(demandListBtn);
 
 		goUpDown();
-		
+
 		// Demand details
 		WebElement DemandDetailsBtn = findElementByXpath(
 				"//*[@id=\"index-page\"]/body/app-root/div[1]/body/section[1]/div/div/div[2]/app-listedemadecitoyen/div[2]/div[1]/table/tbody/tr[1]/td[5]/span/a");
 
 		clickElement(DemandDetailsBtn);
-		
+
 		Thread.sleep(10000);
 		// Download Demand PJ
 		WebElement pjDownloadBtn = findElementByXpath(
 				"//*[@id=\"step-3\"]/app-demande-dynamique/div[1]/div[6]/div/div/div/div/div/div[2]/a");
 		clickElement(pjDownloadBtn);
-		
+
 		Thread.sleep(2000);
 		goUp();
-		
+
 		Thread.sleep(30000);
 		// Back to demands list
 		clickElement(demandListBtn);
@@ -160,18 +160,18 @@ public class SeleniumExample {
 //		clickElement(annullerDemandeBtn);
 
 		goUpDown();
-		
-		
+
 	}
-	
+
 	public static void viewNotifications() throws Exception {
-		WebElement notificationsBtn = findElementByXpath("//*[@id=\"index-page\"]/body/app-root/div[1]/body/header/app-header/header/div/div/div/div/a[2]");
+		WebElement notificationsBtn = findElementByXpath(
+				"//*[@id=\"index-page\"]/body/app-root/div[1]/body/header/app-header/header/div/div/div/div/a[2]");
 		clickElement(notificationsBtn);
 		Thread.sleep(2000);
 		goUpDown();
 		Thread.sleep(2000);
 	}
-	
+
 	public static void goUpDown() throws Exception {
 		goUp();
 		Thread.sleep(2000);
@@ -179,14 +179,14 @@ public class SeleniumExample {
 		Thread.sleep(2000);
 		goUp();
 	}
-	
+
 	public static void goUp() throws Exception {
 		Robot robot = new Robot();
 		robot.mouseWheel(1);
-		
+
 		Thread.sleep(2000);
 	}
-	
+
 	public static void goDown() throws Exception {
 		Robot robot = new Robot();
 		robot.mouseWheel(-1);
@@ -237,10 +237,11 @@ public class SeleniumExample {
 			System.err.println("username textbox is not displayed");
 		System.out.println("Login successfully");
 	}
-	
+
 	private static void logout() {
-		WebElement logoutBtn = findElementByXpath("//*[@id=\"index-page\"]/body/app-root/div[1]/body/header/app-header/header/div/div/div/div/a[1]");
-		
+		WebElement logoutBtn = findElementByXpath(
+				"//*[@id=\"index-page\"]/body/app-root/div[1]/body/header/app-header/header/div/div/div/div/a[1]");
+
 		clickElement(logoutBtn);
 	}
 
