@@ -1,14 +1,13 @@
 package com.smart.selenium;
 
 import java.awt.AWTException;
-import java.awt.Event;
 import java.awt.Robot;
+import java.awt.event.KeyEvent;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.devtools.v100.indexeddb.model.Key;
 import org.openqa.selenium.interactions.Actions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -17,45 +16,53 @@ public class SeleniumExample {
 
 	private static WebDriver driver;
 	private static Actions actions;
-	
-	public static void main(String[] args) throws InterruptedException, AWTException {
-		// System.setProperty("webdriver.chrome.driver",
-		// "src/main/resources/chromedriver.exe");
+
+	public static void main(String[] args) throws Exception {
+
 		WebDriverManager.chromedriver().setup();
 		driver = new ChromeDriver();
 		driver.get("https://reclamation.eserviceslab.com");
 		driver.manage().window().maximize();
-
 		actions = new Actions(driver);
-		Thread.sleep(10000);
+
+		System.out.println("Starting chrome windows");
+
+		Thread.sleep(20000);
 
 		// Login As cnss user
 		login("cnssuser", "1234");
-
+		
 		Thread.sleep(30000);
-
+		goUpDown();
+		Thread.sleep(30000);
+		
+		viewNotifications();
+		
+		logout();
+		return;
 		// Add demande
-		WebElement addDemandBtn = driver.findElement(By.xpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[2]"));
-		addDemandBtn.click();
-		Thread.sleep(5000);
-		addDemand();
+//		WebElement addDemandBtn = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[2]");
+//		clickElement(addDemandBtn);
+//		Thread.sleep(5000);
+//		addDemand();
 
 	}
 
-	private static void addDemand() throws InterruptedException, AWTException {
+	private static void addDemand() throws Exception {
 
-		WebElement matriculeInput = driver.findElement(By.xpath("//*[@id=\"step-1\"]/form/input[1]"));
-		WebElement objectifInput = driver.findElement(By.xpath("//*[@id=\"step-1\"]/form/input[2]"));
-		WebElement LettreInput = driver.findElement(By.xpath("//*[@id=\"dmd\"]/div/div/div"));
+		WebElement matriculeInput = findElementByXpath("//*[@id=\"step-1\"]/form/input[1]");
+		WebElement objectifInput = findElementByXpath("//*[@id=\"step-1\"]/form/input[2]");
+		WebElement LettreInput = findElementByXpath("//*[@id=\"dmd\"]/div/div/div");
 
 		Thread.sleep(3000);
 		if (matriculeInput.isDisplayed() && objectifInput.isDisplayed() && LettreInput.isDisplayed()) {
-			humanTyping(matriculeInput, "8656569665");
+			humanTyping(matriculeInput, "7656569665");
 			Thread.sleep(2000);
 			humanTyping(objectifInput, "Reclamation sur prestations");
 			Thread.sleep(3000);
 			humanTyping(LettreInput, "Madame, Monsieur,\r\n" + "\r\n"
-					+ "J’ai reçu un courrier par lequel vous indiquiez votre refus de modification de mon relevé de situation");
+					+ "J’ai reçu un courrier par lequel vous indiquiez votre refus de modification de mon relevé de situation.\r\n");
+
 //			humanTyping(LettreInput, "Madame, Monsieur,\r\n" + "\r\n"
 //					+ "J’ai reçu un courrier par lequel vous indiquiez votre refus de modification de mon relevé de situation.\r\n"
 //					+ "\r\n"
@@ -63,64 +70,157 @@ public class SeleniumExample {
 //					+ "\r\n"
 //					+ "Comme le confirment les pièces justificatives fournies dans ce courrier, je satisfais aux conditions de liquidation des droits (apporter les informations étayant votre point de vue).\r\n");
 //			
+
 			Thread.sleep(5000);
 
-			WebElement fileUploadBtn = driver.findElement(By.xpath("//*[@id=\"1\"]"));
-
+			WebElement fileUploadBtn = findElementByXpath("//*[@id=\"1\"]");
+			
+			goDown();
 			fileUploadBtn.sendKeys("C:\\Users\\SMSDT-DEV-005\\Desktop\\file-sample_150kB.pdf");
 			System.out.println("Uploaded a file");
 
 			Thread.sleep(15000);
-			WebElement createDemandBtn = driver.findElement(By.xpath("//*[@id=\"step-1\"]/div/a"));
+			WebElement createDemandBtn = findElementByXpath("//*[@id=\"step-1\"]/div/a");
 			Thread.sleep(3000);
-			actions.moveToElement(createDemandBtn).click().perform();
+			clickElement(createDemandBtn);
 
 			Thread.sleep(30000);
 			WebElement submitDemandBtn = driver.findElement(By.xpath("//*[@id=\"step-2\"]/div/a[2]"));
 			System.out.println("Demand Created successfully");
-			Thread.sleep(3000);
-			actions.moveToElement(submitDemandBtn).click().perform();
-			
-			
+
+			clickElement(submitDemandBtn);
+
 			System.out.println("Demand Submitted successfully");
+			Thread.sleep(2000);
+			goUp();
 			
 			Thread.sleep(30000);
 			demandListAndDetails();
-		}
 
+		}
 	}
 
-	private static void demandListAndDetails() throws InterruptedException {
-		WebElement demandListBtn = driver.findElement(By.xpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[3]/a"));
-		actions.moveToElement(demandListBtn).click().perform();
-		Thread.sleep(20000);
+	private static void clickElement(WebElement element) {
+		if (element == null)
+			return;
 
+		int stop = 0;
+		while (true) {
+			try {
+				System.out.println("Element " + element + " is being clicked");
+				Thread.sleep(1000);
+				if (element.isDisplayed() && element.isEnabled()) {
+					actions.moveToElement(element).click().perform();
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("Element  = " + element.getText() + " Exception = " + e.getMessage());
+			}
+
+			if (stop == 3) {
+				System.out.println(element + "not found");
+				break;
+			}
+			stop++;
+		}
+	}
+
+	private static void demandListAndDetails() throws Exception {
+		
+		Thread.sleep(3000);
+		WebElement demandListBtn = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[3]/a");
+
+		clickElement(demandListBtn);
+
+		goUpDown();
+		
 		// Demand details
-		WebElement DemandDetailsBtn = driver.findElement(By.xpath(
-				"//*[@id=\"reclamation-page\"]/body/app-root/div[1]/body/section[1]/div/div/div[2]/app-listedemadecitoyen/div[2]/div[1]/table/tbody/tr[1]/td[5]/span/a"));
-		
-		DemandDetailsBtn.click();
-		
+		WebElement DemandDetailsBtn = findElementByXpath(
+				"//*[@id=\"index-page\"]/body/app-root/div[1]/body/section[1]/div/div/div[2]/app-listedemadecitoyen/div[2]/div[1]/table/tbody/tr[1]/td[5]/span/a");
 
+		clickElement(DemandDetailsBtn);
+		
+		Thread.sleep(10000);
+		// Download Demand PJ
+		WebElement pjDownloadBtn = findElementByXpath(
+				"//*[@id=\"step-3\"]/app-demande-dynamique/div[1]/div[6]/div/div/div/div/div/div[2]/a");
+		clickElement(pjDownloadBtn);
+		
+		Thread.sleep(2000);
+		goUp();
+		
+		Thread.sleep(30000);
 		// Back to demands list
-		actions.moveToElement(demandListBtn).click().perform();
+		clickElement(demandListBtn);
 
 		// Cancel demand
-		Thread.sleep(30000);
-		WebElement annullerDemandeBtn = driver.findElement(By.xpath("//*[@id=\"step-2\"]/div/a[2]"));
-		annullerDemandeBtn.click();
+//		Thread.sleep(30000);
+//
+//		WebElement annullerDemandeBtn = findElementByXpath("//*[@id=\"step-2\"]/div/a[2]");
+//		clickElement(annullerDemandeBtn);
+
+		goUpDown();
 		
-		// Download Demand PJ
-		WebElement pjDownloadBtn = driver.findElement(
-				By.xpath("//*[@id=\"step-3\"]/app-demande-dynamique/div[1]/div[6]/div/div/div/div/div/div[2]/a"));
-		pjDownloadBtn.click();
+		
+	}
+	
+	public static void viewNotifications() throws Exception {
+		WebElement notificationsBtn = findElementByXpath("//*[@id=\"index-page\"]/body/app-root/div[1]/body/header/app-header/header/div/div/div/div/a[2]");
+		clickElement(notificationsBtn);
+		Thread.sleep(2000);
+		goUpDown();
+		Thread.sleep(2000);
+	}
+	
+	public static void goUpDown() throws Exception {
+		goUp();
+		Thread.sleep(2000);
+		goDown();
+		Thread.sleep(2000);
+		goUp();
+	}
+	
+	public static void goUp() throws Exception {
+		Robot robot = new Robot();
+		robot.mouseWheel(1);
+		
+		Thread.sleep(2000);
+	}
+	
+	public static void goDown() throws Exception {
+		Robot robot = new Robot();
+		robot.mouseWheel(-1);
+		Thread.sleep(2000);
+	}
+
+	private static WebElement findElementByXpath(String xPATH) {
+		int stop = 1;
+		while (true) {
+			try {
+				System.out.println("Element" + xPATH + " is being located yet ...");
+				Thread.sleep(1000);
+				WebElement element = driver.findElement(By.xpath(xPATH));
+				System.out.println("Element" + xPATH + " Located successfully");
+				return element;
+			} catch (Exception e) {
+				System.out.println("Element" + xPATH + " cannot be located yet ..., Exception " + e.getMessage());
+			}
+
+			if (stop == 3) {
+				System.out.println("Element" + xPATH + " cannot be located");
+				break;
+			}
+
+			stop++;
+		}
+		return null;
 	}
 
 	private static void login(String usernameVal, String passwordVal) throws InterruptedException {
-
-		WebElement username = driver.findElement(By.xpath("//*[@id=\"username\"]"));
-		WebElement password = driver.findElement(By.xpath("//*[@id=\"password\"]"));
-		WebElement submitBtn = driver.findElement(By.xpath("/html/body/div/div/div[1]/main/form/div[4]/button"));
+		Thread.sleep(3000);
+		WebElement username = findElementByXpath("//*[@id=\"username\"]");
+		WebElement password = findElementByXpath("//*[@id=\"password\"]");
+		WebElement submitBtn = findElementByXpath("/html/body/div/div/div[1]/main/form/div[4]/button");
 
 		if (username.isDisplayed() && password.isDisplayed()) {
 			if (username.isEnabled() && password.isEnabled()) {
@@ -135,8 +235,13 @@ public class SeleniumExample {
 				System.err.println("username textbox is not enabled");
 		} else
 			System.err.println("username textbox is not displayed");
-
 		System.out.println("Login successfully");
+	}
+	
+	private static void logout() {
+		WebElement logoutBtn = findElementByXpath("//*[@id=\"index-page\"]/body/app-root/div[1]/body/header/app-header/header/div/div/div/div/a[1]");
+		
+		clickElement(logoutBtn);
 	}
 
 	private static void humanTyping(WebElement element, String text) throws InterruptedException {
