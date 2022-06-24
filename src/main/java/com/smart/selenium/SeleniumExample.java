@@ -1,8 +1,6 @@
 package com.smart.selenium;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
+
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -28,7 +26,15 @@ public class SeleniumExample {
 		System.out.println("Starting chrome windows");
 
 		Thread.sleep(20000);
-
+		
+		//Login as admin
+		login("cnssadmin", "1234");
+		Thread.sleep(30000);
+		goUpDown();
+		Thread.sleep(30000);
+		
+		
+		
 		// Login As cnss user
 		login("cnssuser", "1234");
 
@@ -85,7 +91,7 @@ public class SeleniumExample {
 			clickElement(createDemandBtn);
 
 			Thread.sleep(30000);
-			WebElement submitDemandBtn = driver.findElement(By.xpath("//*[@id=\"step-2\"]/div/a[2]"));
+			WebElement submitDemandBtn = findElementByXpath("//*[@id=\"step-2\"]/div/a[2]");
 			System.out.println("Demand Created successfully");
 
 			clickElement(submitDemandBtn);
@@ -181,15 +187,14 @@ public class SeleniumExample {
 	}
 
 	public static void goUp() throws Exception {
-		Robot robot = new Robot();
-		robot.mouseWheel(1);
-
+		WebElement topElement = findElementByXpath("//*[@id=\"index-page\"]/body/app-root/div[1]/body/header/app-header/header");
+		actions.moveToElement(topElement);
 		Thread.sleep(2000);
 	}
 
 	public static void goDown() throws Exception {
-		Robot robot = new Robot();
-		robot.mouseWheel(-1);
+		WebElement buttomElement = findElementByXpath("//*[@id=\"index-page\"]/body/app-root/div[1]/body/app-footer/footer");
+		actions.moveToElement(buttomElement);
 		Thread.sleep(2000);
 	}
 
@@ -200,6 +205,7 @@ public class SeleniumExample {
 				System.out.println("Element" + xPATH + " is being located yet ...");
 				Thread.sleep(1000);
 				WebElement element = driver.findElement(By.xpath(xPATH));
+				actions.moveToElement(element);
 				System.out.println("Element" + xPATH + " Located successfully");
 				return element;
 			} catch (Exception e) {
