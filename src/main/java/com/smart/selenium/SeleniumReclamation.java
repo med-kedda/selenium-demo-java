@@ -10,7 +10,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class SeleniumExample {
+public class SeleniumReclamation {
 
 	private static WebDriver driver;
 	private static Actions actions;
@@ -50,8 +50,47 @@ public class SeleniumExample {
 
 		viewNotifications();
 		logout();
-		return;
+		
 
+	}
+	
+	
+	private static void adminFeatures() throws Exception {
+		
+		serviceParams();
+		
+		manageParams();
+		
+		manageAgents();
+		
+		manageChampSup();
+		
+	}
+	
+	private static void serviceParams() throws Exception {
+		WebElement serviceParamsBtn = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[2]/a");
+		clickElement(serviceParamsBtn);
+		Thread.sleep(3000);
+	}
+	
+	private static void manageAgents() throws Exception{
+		WebElement agentsListBtn = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[4]/a");
+		clickElement(agentsListBtn);
+		Thread.sleep(30000);
+	}
+	
+	private static void manageParams() throws Exception {
+		WebElement addParams = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[3]/a");
+		clickElement(addParams);
+		Thread.sleep(2000);
+	}
+	
+	private static void manageChampSup() throws Exception {
+		WebElement addChampSup = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[5]/a");
+		clickElement(addChampSup);
+		
+		WebElement champSupList = findElementByXpath("//*[@id=\"sidebar\"]/app-sidebar/ul/li[6]/a");
+		clickElement(champSupList);
 	}
 
 	private static void addDemand() throws Exception {
